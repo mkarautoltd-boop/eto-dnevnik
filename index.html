@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A6E7C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ел. дневник">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}*{-webkit-tap-highlight-color:transparent}html,body{max-width:100%;overflow-x:hidden}</style>
+<title>Ел. дневник ЕТО</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1F3;--surface:#FFFFFF;--surface2:#E2E8EC;--ink:#12202B;--muted:#566874;
+  --line:#CAD4DB;--accent:#0A6E7C;--accentInk:#FFFFFF;--accentSoft:#D7ECEF;
+  --ok:#23804F;--warn:#9A6200;--bad:#BE3527;--okbg:#E0F1E7;--warnbg:#FAEFD6;--badbg:#FAE2DE;
+  --shadow:0 1px 2px rgba(18,32,43,.07);
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --bg:#0B151C;--surface:#13212B;--surface2:#1B2D39;--ink:#E3EBEF;--muted:#8DA1AE;--line:#2A3D4A;
+  --accent:#3AB2C2;--accentInk:#062129;--accentSoft:#113640;
+  --ok:#4DC08A;--warn:#E2A83A;--bad:#F07264;--okbg:#10301F;--warnbg:#382A0C;--badbg:#3B1914;--shadow:none}}
+:root[data-theme="dark"]{color-scheme:dark;
+  --bg:#0B151C;--surface:#13212B;--surface2:#1B2D39;--ink:#E3EBEF;--muted:#8DA1AE;--line:#2A3D4A;
+  --accent:#3AB2C2;--accentInk:#062129;--accentSoft:#113640;
+  --ok:#4DC08A;--warn:#E2A83A;--bad:#F07264;--okbg:#10301F;--warnbg:#382A0C;--badbg:#3B1914;--shadow:none}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 16px 6px;max-width:880px;margin:0 auto}
+.brand{font-family:var(--f-display);font-weight:700;font-size:20px;letter-spacing:.01em}
+.brand small{display:block;font-family:var(--f-mono);font-weight:400;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.date{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+nav{display:flex;gap:4px;overflow-x:auto;padding:4px 12px 8px;max-width:880px;margin:0 auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:none;border:1px solid transparent;background:none;padding:7px 12px;border-radius:999px;font-family:var(--f-display);font-weight:600;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
+nav button[aria-current="true"]{background:var(--accent);color:var(--accentInk)}
+nav .cnt{font-family:var(--f-mono);font-size:11px;font-weight:500;background:var(--badbg);color:var(--bad);border-radius:999px;padding:0 6px}
+nav button[aria-current="true"] .cnt{background:var(--accentInk);color:var(--accent)}
+
+main{max-width:880px;margin:0 auto;padding-inline:16px;padding-block:16px 96px;display:flex;flex-direction:column;gap:16px}
+.demo{font-size:13px;background:var(--accentSoft);color:var(--ink);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.demo button{border:none;background:none;color:var(--accent);font-weight:600;padding:0}
+h2{font-family:var(--f-display);font-weight:700;font-size:22px;margin:0;text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bar h2{flex:1 1 auto}
+.search{flex:1 1 180px;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 12px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 14px;font-weight:600;font-size:14px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accentInk)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.danger.armed{background:var(--bad);color:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:13px}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accentSoft);font-weight:600}
+
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.item{display:grid;grid-template-columns:4px 1fr auto;gap:0 12px;padding:12px 14px 12px 0;border-top:1px solid var(--line);text-align:left;background:none;border-left:none;border-right:none;border-bottom:none;width:100%;align-items:start}
+.item:first-child{border-top:none}
+.item:hover{background:var(--surface2)}
+.stripe{align-self:stretch;border-radius:0 3px 3px 0;background:transparent}
+.s-bad .stripe{background:var(--bad)}.s-warn .stripe{background:var(--warn)}.s-ok .stripe{background:var(--ok)}.s-mute .stripe{background:var(--line)}
+.it-title{font-weight:600;overflow-wrap:anywhere}
+.it-meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:2px}
+.it-meta .tag{font-family:var(--f-mono);font-size:12px;color:var(--ink)}
+.it-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}
+.pill{font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.p-bad{background:var(--badbg);color:var(--bad)}.p-warn{background:var(--warnbg);color:var(--warn)}.p-ok{background:var(--okbg);color:var(--ok)}.p-mute{background:var(--surface2);color:var(--muted)}.p-acc{background:var(--accentSoft);color:var(--accent)}
+.empty{padding:22px 16px;color:var(--muted);text-align:center;font-size:14px}
+.thumb{width:44px;height:44px;border-radius:6px;object-fit:cover}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow)}
+.tile b{font-family:var(--f-mono);font-size:28px;font-weight:500;line-height:1.1}
+.tile span{font-size:13px;color:var(--muted)}
+.tile.bad b{color:var(--bad)}.tile.warn b{color:var(--warn)}.tile.ok b{color:var(--ok)}
+section{display:flex;flex-direction:column;gap:8px}
+
+.spark{display:block}
+.spark .ln{fill:none;stroke:var(--accent);stroke-width:1.6}
+.spark .ar{fill:var(--accentSoft)}
+.spark .gd{stroke:var(--line);stroke-width:1}
+.spark .dt{fill:var(--accent)}
+.spark.bad .ln{stroke:var(--bad)}.spark.bad .dt{fill:var(--bad)}.spark.bad .ar{fill:var(--badbg)}
+.big{font-family:var(--f-mono);font-size:17px;font-weight:500}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.hand{font-family:var(--f-mono);font-size:13px;white-space:pre-wrap;background:var(--surface2);border-radius:8px;padding:12px;overflow-x:auto;max-height:340px;overflow-y:auto}
+
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(6,14,20,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;border-radius:14px 14px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+@media (min-width:600px){.veil{align-items:center}.sheet{border-radius:14px}}
+.sheet h2{font-size:20px}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.fld input,.fld select,.fld textarea{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:9px 11px;width:100%;min-width:0}
+.fld textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;padding-top:4px}
+.acts .r{display:flex;gap:8px;margin-left:auto}
+.photo img{max-height:180px;border-radius:8px}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px}
+.tbl td,.tbl th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.tbl th{font-size:12px;color:var(--muted);font-weight:600}
+.tbl td.n{font-family:var(--f-mono);text-align:right}
+.hist{font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;z-index:60}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}}}
+</style>
+
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div class="brand" id="brand">Ел. дневник<small id="shipName">Кораб</small></div>
+    <div class="date num" id="today"></div>
+  </div>
+  <nav id="nav" aria-label="Модули"></nav>
+</header>
+<main id="main"></main>
+<div id="sheetHost"></div>
+
+<script>
+(function(){
+const KEY='etoLogbook.v1';
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>iso(new Date());
+const addDays=(s,n)=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()+n);return iso(d)};
+const diff=(a,b)=>Math.round((new Date(a+'T12:00:00')-new Date(b+'T12:00:00'))/864e5);
+const fmt=s=>{if(!s)return '—';const [y,m,d]=s.split('-');return d+'.'+m+'.'+y.slice(2)};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const SYSTEMS=['ВН / HV разпределение','НН / LV разпределение','Генериране','Задвижване','Аварийни системи','Пожарна безопасност','HVAC','Камбуз','Асансьори','Осветление','Хотел / кабини','Навигация и комуникации','Друго'];
+const PRIOS=['Спешна','Висока','Нормална','Ниска'];
+const JSTAT=['Отворена','В работа','Чака части','Затворена'];
+const MTYPES={'IR':'Изолация, MΩ','I':'Ток, A','T':'Температура, °C','U':'Напрежение, V','V':'Вибрации, mm/s'};
+const RES=['OK','Със забележка','Неуспешен'];
+
+/* ---------- data ---------- */
+function sample(){
+  const t=today(),D=n=>addDays(t,n);
+  const E=[
+    ['HV-SWBD-1','ГРЩ 11 kV, преден','ВН / HV разпределение','Deck 1, MVZ 3, Fr 98','ABB UniGear'],
+    ['DG-3','Дизел-генератор 3, алтернатор','Генериране','Deck 1, MVZ 4, Fr 120','Wärtsilä / ABB AMG'],
+    ['AZ-PS','Азипод ЛБ, пропулсивен двигател','Задвижване','Deck 0, кърма, Fr 12','ABB Azipod'],
+    ['EG-1','Авариен генератор','Аварийни системи','Deck 12, MVZ 5',''],
+    ['GAL-4-DW','Съдомиялна, основен камбуз','Камбуз','Deck 4, MVZ 3','Hobart'],
+    ['AHU-12','Климатична централа 12, вентилатор','HVAC','Deck 7, MVZ 2, Fr 176',''],
+    ['LIFT-C3','Пътнически асансьор C3','Асансьори','Deck 3–14, MVZ 4','KONE'],
+    ['FD-L5','Пожароизвестяване, контур 5','Пожарна безопасност','Deck 5, MVZ 1–2','Consilium']
+  ].map(a=>({id:uid(),tag:a[0],name:a[1],system:a[2],loc:a[3],maker:a[4],notes:''}));
+  const e=i=>E[i].id;
+  return {
+    meta:{ship:'Примерен кораб',irMin:1,demo:true},
+    equipment:E,
+    jobs:[
+      {id:uid(),date:D(0),title:'Не работи контакт до бюрото',loc:'Cabin 8214',equip:'',prio:'Нормална',status:'Отворена',ptw:'',desc:'Докладвано от стюард, 09:40.',action:'',parts:'',photo:''},
+      {id:uid(),date:D(-2),title:'Повишен ток на вентилатора',loc:'Deck 7, MVZ 2',equip:e(5),prio:'Висока',status:'В работа',ptw:'PTW-2291',desc:'Токът расте от 18 до 22 A за месец.',action:'Проверени лагери, шум от NDE страна. Предстои смяна.',parts:'Лагер 6310-2Z ×1',photo:''},
+      {id:uid(),date:D(-4),title:'Изгорял нагревател на бойлера',loc:'Основен камбуз',equip:e(4),prio:'Висока',status:'Чака части',ptw:'',desc:'Водата не достига 82 °C.',action:'Нагревателят е с прекъсната спирала. Поръчан.',parts:'Heater 9 kW, PN 4431-22',photo:''},
+      {id:uid(),date:D(-6),title:'Мигащо LED осветление в галерията',loc:'Deck 5, Promenade',equip:'',prio:'Ниска',status:'Затворена',ptw:'',desc:'',action:'Сменен драйвер 350 mA.',parts:'LED драйвер ×1',photo:''}
+    ],
+    pms:[
+      {id:uid(),equip:e(1),task:'Четки и контактни пръстени: проверка и почистване',interval:90,last:D(-80),notes:'',hist:[D(-170),D(-80)]},
+      {id:uid(),equip:e(2),task:'Изолационно съпротивление на статора',interval:30,last:D(-34),notes:'Мегер 5 kV, 1 мин.',hist:[D(-64),D(-34)]},
+      {id:uid(),equip:e(0),task:'Термовизия на шини и кабелни връзки',interval:180,last:D(-60),notes:'',hist:[D(-60)]},
+      {id:uid(),equip:e(6),task:'Спирачка и крайни изключватели',interval:30,last:D(-25),notes:'Заедно с техника на KONE.',hist:[D(-55),D(-25)]},
+      {id:uid(),equip:e(5),task:'Смазване на лагерите на двигателя',interval:60,last:D(-10),notes:'',hist:[D(-10)]}
+    ],
+    meas:[
+      ...[2400,2150,1900,1620,1310].map((v,i)=>({id:uid(),date:D(-120+i*30),equip:e(2),type:'IR',value:v,notes:''})),
+      ...[18.2,18.4,19.1,20.6,22.3].map((v,i)=>({id:uid(),date:D(-28+i*7),equip:e(5),type:'I',value:v,notes:''})),
+      ...[71,72,74,76,78].map((v,i)=>({id:uid(),date:D(-20+i*5),equip:e(1),type:'T',value:v,notes:'Лагер NDE'})),
+      ...[0.9,0.7].map((v,i)=>({id:uid(),date:D(-14+i*14),equip:e(4),type:'IR',value:v,notes:'Нагревател'}))
+    ],
+    tests:[
+      {id:uid(),name:'Авариен генератор: пуск и поемане на товар',interval:7,last:D(-6),result:'OK',notes:'',hist:[]},
+      {id:uid(),name:'Нисколокализирано осветление (LLL): обход',interval:30,last:D(-31),result:'Със забележка',notes:'2 секции тъмни на Deck 9.',hist:[]},
+      {id:uid(),name:'Аварийно осветление: тест на батериите',interval:30,last:D(-12),result:'OK',notes:'',hist:[]},
+      {id:uid(),name:'Пожароизвестяване: детектори по ротация',interval:7,last:D(-3),result:'OK',notes:'Тази седмица: контур 5.',hist:[]},
+      {id:uid(),name:'Водонепроницаеми врати: работа и индикация',interval:7,last:D(-8),result:'OK',notes:'',hist:[]},
+      {id:uid(),name:'PA и General Alarm',interval:7,last:D(-2),result:'OK',notes:'',hist:[]},
+      {id:uid(),name:'Аварийни акумулатори 24 V: напрежение и плътност',interval:7,last:D(-5),result:'OK',notes:'',hist:[]}
+    ],
+    parts:[
+      {id:uid(),pn:'4431-22',name:'Нагревател 9 kW за съдомиялна',qty:0,min:2,loc:'Store E2, рафт 4'},
+      {id:uid(),pn:'LD-350',name:'LED драйвер 350 mA',qty:14,min:10,loc:'Store E1, кутия 12'},
+      {id:uid(),pn:'LC1D40',name:'Контактор 3P 40 A, 230 V бобина',qty:3,min:4,loc:'Store E1, рафт 2'},
+      {id:uid(),pn:'gG16',name:'Предпазител gG 16 A, 10×38',qty:60,min:30,loc:'Store E1, чекмедже 3'},
+      {id:uid(),pn:'EG34',name:'Четки за алтернатор DG, EG34',qty:6,min:12,loc:'Store E2, рафт 1'},
+      {id:uid(),pn:'6310-2Z',name:'Лагер 6310-2Z',qty:2,min:2,loc:'Store E2, рафт 3'}
+    ],
+    hand:[
+      {id:uid(),date:D(-1),text:'DG-3: следи температурата на лагера NDE. Последно 78 °C, расте с около 1,5 °C на 5 дни.',pin:true},
+      {id:uid(),date:D(-3),text:'Нагревателят за съдомиялната е поръчан. Очакван в следващото пристанище.',pin:false}
+    ]
+  };
+}
+function empty(){return {meta:{ship:'',irMin:1,demo:false},equipment:[],jobs:[],pms:[],meas:[],tests:[],parts:[],hand:[]}}
+let db;
+function load(){try{const s=localStorage.getItem(KEY);if(s){db=JSON.parse(s);return}}catch(e){}db=sample()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db));return true}catch(e){toast('Паметта е пълна. Изтрий снимки или направи архив.');return false}}
+load();
+
+/* ---------- helpers ---------- */
+const eq=id=>db.equipment.find(x=>x.id===id);
+const eqLabel=id=>{const x=eq(id);return x?x.tag:''};
+function due(last,interval){if(!last)return{days:-1,cls:'bad',txt:'Не е правено'};const next=addDays(last,+interval);const d=diff(next,today());return{next,days:d,cls:d<0?'bad':d<=Math.min(7,Math.ceil(interval/4))?'warn':'ok',txt:d<0?'Просрочено '+(-d)+' дни':d===0?'Днес':'След '+d+' дни'}}
+const jobCls=j=>j.status==='Затворена'?'mute':j.prio==='Спешна'||j.prio==='Висока'?'bad':j.status==='Чака части'?'warn':'ok';
+const measGroups=()=>{const g={};db.meas.forEach(m=>{const k=m.equip+'|'+m.type;(g[k]=g[k]||[]).push(m)});return Object.entries(g).map(([k,a])=>{a.sort((x,y)=>x.date<y.date?-1:1);const [equip,type]=k.split('|');return{equip,type,list:a,last:a[a.length-1],first:a[0]}})};
+const irAlert=g=>g.type==='IR'&&(+g.last.value<+db.meta.irMin);
+const trendPct=g=>g.list.length>1&&+g.first.value?Math.round((g.last.value-g.first.value)/g.first.value*100):0;
+function counts(){
+  return{
+    jobs:db.jobs.filter(j=>j.status!=='Затворена').length,
+    pms:db.pms.filter(p=>due(p.last,p.interval).days<0).length,
+    tests:db.tests.filter(t=>due(t.last,t.interval).days<0).length,
+    parts:db.parts.filter(p=>+p.qty<+p.min).length,
+    meas:measGroups().filter(irAlert).length
+  }
+}
+function spark(vals,bad){
+  const w=120,h=34,p=3;if(vals.length<2)return '';
+  const mn=Math.min(...vals),mx=Math.max(...vals),r=mx-mn||1;
+  const pts=vals.map((v,i)=>[p+i*(w-2*p)/(vals.length-1),h-p-(v-mn)/r*(h-2*p)]);
+  const l=pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ');
+  const L=pts[pts.length-1];
+  return `<svg class="spark${bad?' bad':''}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><line class="gd" x1="0" x2="${w}" y1="${h-p}" y2="${h-p}"/><polygon class="ar" points="${p},${h-p} ${l} ${L[0].toFixed(1)},${h-p}"/><polyline class="ln" points="${l}"/><circle class="dt" cx="${L[0].toFixed(1)}" cy="${L[1].toFixed(1)}" r="2.8"/></svg>`;
+}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+
+/* ---------- forms ---------- */
+const equipOpts=()=>[['','—']].concat(db.equipment.slice().sort((a,b)=>a.tag.localeCompare(b.tag)).map(x=>[x.id,x.tag+' · '+x.name]));
+const F={
+  equipment:{title:'Оборудване',fields:()=>[['tag','Таг / номер','text',1],['name','Наименование','text',1],['system','Система','select',0,SYSTEMS],['loc','Локация (палуба, MVZ, шпангоут)','text'],['maker','Производител / модел','text'],['notes','Бележки','textarea']]},
+  jobs:{title:'Заявка / ремонт',fields:()=>[['title','Какво е проблемът','text',1],['date','Дата','date'],['loc','Локация / кабина','text'],['equip','Оборудване','select',0,equipOpts()],['prio','Приоритет','select',0,PRIOS],['status','Статус','select',0,JSTAT],['ptw','Permit to work / LOTO №','text'],['desc','Описание','textarea'],['action','Извършено','textarea'],['parts','Вложени части','text'],['photo','Снимка','photo']]},
+  pms:{title:'Планова поддръжка',fields:()=>[['equip','Оборудване','select',0,equipOpts()],['task','Задача','text',1],['interval','Интервал, дни','number',1],['last','Последно изпълнено','date'],['notes','Бележки','textarea']]},
+  meas:{title:'Измерване',fields:()=>[['equip','Оборудване','select',1,equipOpts()],['type','Вид','select',0,Object.entries(MTYPES)],['value','Стойност','number',1],['date','Дата','date'],['notes','Бележки (точка, условия)','text']]},
+  tests:{title:'Тест по SOLAS',fields:()=>[['name','Тест','text',1],['interval','Интервал, дни','number',1],['last','Последно проведен','date'],['result','Резултат','select',0,RES],['notes','Бележки','textarea']]},
+  parts:{title:'Резервна част',fields:()=>[['name','Наименование','text',1],['pn','Part №','text'],['qty','Наличност','number'],['min','Минимум','number'],['loc','Склад / място','text']]},
+  hand:{title:'Handover бележка',fields:()=>[['text','Бележка','textarea',1],['date','Дата','date'],['pin','Закачи най-отгоре','check']]}
+};
+const defaults={jobs:()=>({date:today(),prio:'Нормална',status:'Отворена'}),meas:()=>({date:today(),type:'IR'}),pms:()=>({interval:30}),tests:()=>({interval:7,result:'OK'}),parts:()=>({qty:0,min:1}),hand:()=>({date:today()}),equipment:()=>({system:SYSTEMS[1]})};
+
+let photoData='';
+function openForm(kind,id,preset){
+  const rec=id?db[kind].find(x=>x.id===id):Object.assign({},defaults[kind]?.()||{},preset||{});
+  const cfg=F[kind];photoData=rec.photo||'';
+  let h=`<h2>${id?'':'Нов запис: '}${cfg.title}</h2><form id="frm" class="fld-wrap" style="display:flex;flex-direction:column;gap:12px">`;
+  cfg.fields().forEach(([k,l,t,req,opts])=>{
+    const v=rec[k]??'',fid='f_'+kind+'_'+k;
+    if(t==='check'){h+=`<label class="chk"><input type="checkbox" id="${fid}" name="${k}" ${v?'checked':''}> ${l}</label>`;return}
+    h+=`<div class="fld"><label for="${fid}">${l}${req?' *':''}</label>`;
+    if(t==='select')h+=`<select id="${fid}" name="${k}" ${req?'required':''}>`+opts.map(o=>{const[val,lab]=Array.isArray(o)?o:[o,o];return`<option value="${esc(val)}" ${String(val)===String(v)?'selected':''}>${esc(lab)}</option>`}).join('')+`</select>`;
+    else if(t==='textarea')h+=`<textarea id="${fid}" name="${k}" ${req?'required':''}>${esc(v)}</textarea>`;
+    else if(t==='photo')h+=`<input type="file" id="${fid}" accept="image/*"><div class="photo" id="photoPrev">${v?`<img src="${v}" alt="Снимка към заявката">`:''}</div>`;
+    else h+=`<input id="${fid}" name="${k}" type="${t}" ${t==='number'?'step="any" inputmode="decimal"':''} value="${esc(v)}" ${req?'required':''}>`;
+    h+=`</div>`;
+  });
+  if(rec.hist&&rec.hist.length)h+=`<div class="hist">История: ${rec.hist.slice().reverse().map(fmt).join(', ')}</div>`;
+  h+=`<div class="acts">${id?'<button type="button" class="btn danger" id="del">Изтрий</button>':''}<div class="r"><button type="button" class="btn" id="cancel">Отказ</button><button class="btn pri">Запази</button></div></div></form>`;
+  const s=sheet(h);
+  const ph=s.querySelector('input[type=file]');
+  if(ph)ph.addEventListener('change',()=>{const f=ph.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const k=Math.min(1,900/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);photoData=c.toDataURL('image/jpeg',.7);s.querySelector('#photoPrev').innerHTML=`<img src="${photoData}" alt="Снимка към заявката">`};img.src=r.result};r.readAsDataURL(f)});
+  s.querySelector('#cancel').onclick=closeSheet;
+  const del=s.querySelector('#del');
+  if(del)del.onclick=()=>{if(!del.classList.contains('armed')){del.classList.add('armed');del.textContent='Потвърди изтриването';return}db[kind]=db[kind].filter(x=>x.id!==id);save();closeSheet();render();toast('Изтрито')};
+  s.querySelector('#frm').onsubmit=ev=>{
+    ev.preventDefault();const fd=new FormData(ev.target);const o=id?rec:{id:uid()};
+    cfg.fields().forEach(([k,,t])=>{if(t==='check')o[k]=ev.target.querySelector('[name='+k+']').checked;else if(t==='photo')o[k]=photoData;else if(t==='number'){const n=fd.get(k);o[k]=n===''?'':+n}else o[k]=fd.get(k)});
+    if((kind==='pms'||kind==='tests')&&o.last){o.hist=o.hist||[];if(!o.hist.includes(o.last))o.hist.push(o.last)}
+    if(!id)db[kind].push(o);
+    if(db.meta.demo){} save();closeSheet();render();toast(id?'Промените са запазени':'Добавено');
+  };
+}
+function sheet(inner){const host=document.getElementById('sheetHost');host.innerHTML=`<div class="veil" id="veil"><div class="sheet" role="dialog" aria-modal="true">${inner}</div></div>`;const v=host.querySelector('#veil');v.addEventListener('click',e=>{if(e.target===v)closeSheet()});const f=v.querySelector('input,select,textarea,button');f&&f.focus();return v}
+function closeSheet(){document.getElementById('sheetHost').innerHTML=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+
+/* ---------- views ---------- */
+const TABS=[['dash','Табло'],['jobs','Заявки'],['pms','Поддръжка'],['tests','SOLAS тестове'],['meas','Измервания'],['equipment','Оборудване'],['parts','Части'],['hand','Handover'],['more','Настройки']];
+let tab=(location.hash||'').slice(1);if(!TABS.some(t=>t[0]===tab))tab='dash';
+const ui={q:'',jf:'open',ef:''};
+
+function nav(){const c=counts();const badge={jobs:c.jobs,pms:c.pms,tests:c.tests,parts:c.parts,meas:c.meas};
+  document.getElementById('nav').innerHTML=TABS.map(([k,l])=>`<button data-tab="${k}" aria-current="${k===tab}">${l}${badge[k]?`<span class="cnt">${badge[k]}</span>`:''}</button>`).join('');}
+document.getElementById('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.tab;ui.q='';try{history.replaceState(null,'','#'+tab)}catch(_){}render();window.scrollTo(0,0)});
+
+function demoBanner(){return db.meta.demo?`<div class="demo"><span>Това са примерни данни, за да се види как работи.</span><button data-act="wipe">Започни на чисто</button></div>`:''}
+function bar(title,kind,withSearch){return `<div class="bar"><h2>${title}</h2>${kind?`<button class="btn pri" data-new="${kind}">+ Добави</button>`:''}</div>${withSearch?`<input class="search" id="q" type="search" placeholder="Търси по таг, локация, текст…" value="${esc(ui.q)}">`:''}`}
+const match=(o)=>!ui.q||JSON.stringify(o).toLowerCase().includes(ui.q.toLowerCase());
+
+function jobItem(j){const c=jobCls(j);const st={'Отворена':'p-acc','В работа':'p-ok','Чака части':'p-warn','Затворена':'p-mute'}[j.status];
+  return `<button class="item s-${c}" data-edit="jobs" data-id="${j.id}"><span class="stripe"></span><div><div class="it-title">${esc(j.title)}</div><div class="it-meta">${j.equip?`<span class="tag">${esc(eqLabel(j.equip))}</span>`:''}<span>${esc(j.loc)}</span><span class="num">${fmt(j.date)}</span>${j.ptw?`<span class="tag">${esc(j.ptw)}</span>`:''}</div></div><div class="it-side"><span class="pill ${st}">${j.status}</span>${j.status!=='Затворена'?`<span class="pill ${c==='bad'?'p-bad':'p-mute'}">${j.prio}</span>`:''}${j.photo?`<img class="thumb" src="${j.photo}" alt="">`:''}</div></button>`}
+function dueItem(kind,o,title,meta){const d=due(o.last,o.interval);
+  return `<div class="item s-${d.cls}" style="cursor:default"><span class="stripe"></span><div data-edit="${kind}" data-id="${o.id}" style="cursor:pointer"><div class="it-title">${esc(title)}</div><div class="it-meta">${meta}<span>на ${o.interval} дни</span><span>последно <span class="num">${fmt(o.last)}</span></span></div></div><div class="it-side"><span class="pill p-${d.cls}">${d.txt}</span><button class="btn sm" data-done="${kind}" data-id="${o.id}">Изпълнено днес</button></div></div>`}
+const pmsItem=p=>dueItem('pms',p,p.task,`<span class="tag">${esc(eqLabel(p.equip))}</span>`);
+const testItem=t=>dueItem('tests',t,t.name,t.result&&t.result!=='OK'?`<span class="pill p-warn">${esc(t.result)}</span>`:'');
+function partItem(p){const low=+p.qty<+p.min;return `<div class="item s-${+p.qty===0?'bad':low?'warn':'ok'}"><span class="stripe"></span><div data-edit="parts" data-id="${p.id}" style="cursor:pointer"><div class="it-title">${esc(p.name)}</div><div class="it-meta"><span class="tag">${esc(p.pn)}</span><span>${esc(p.loc)}</span><span>мин. ${p.min}</span></div></div><div class="it-side"><span class="big num" style="color:var(--${+p.qty===0?'bad':low?'warn':'ink'})">${p.qty}</span><div class="bar" style="gap:4px"><button class="btn sm" data-q="-1" data-id="${p.id}" aria-label="Извади една">−</button><button class="btn sm" data-q="1" data-id="${p.id}" aria-label="Добави една">+</button></div></div></div>`}
+function measItem(g){const bad=irAlert(g)||(g.type==='IR'&&trendPct(g)<=-30);const x=eq(g.equip);const tp=trendPct(g);
+  return `<button class="item s-${bad?'bad':'mute'}" data-mg="${g.equip}|${g.type}"><span class="stripe"></span><div><div class="it-title">${esc(x?x.tag:'?')} · ${MTYPES[g.type]}</div><div class="it-meta"><span>${esc(x?x.name:'')}</span><span>${g.list.length} замервания</span>${tp?`<span class="${bad?'':'num'}" style="color:var(--${bad?'bad':'muted'})">${tp>0?'+':''}${tp}% от първото</span>`:''}</div></div><div class="it-side"><span class="big num">${g.last.value}</span>${spark(g.list.map(m=>+m.value),bad)}</div></button>`}
+
+const V={
+dash(){const c=counts();const openJ=db.jobs.filter(j=>j.status!=='Затворена').sort((a,b)=>PRIOS.indexOf(a.prio)-PRIOS.indexOf(b.prio));
+  const dueSoon=[...db.pms.map(p=>['pms',p]),...db.tests.map(t=>['tests',t])].map(([k,o])=>[k,o,due(o.last,o.interval)]).filter(x=>x[2].days<=7).sort((a,b)=>a[2].days-b[2].days);
+  const alerts=measGroups().filter(g=>irAlert(g)||(g.type==='IR'&&trendPct(g)<=-30));
+  const tile=(n,l,k,cls)=>`<button class="tile ${n?cls:'ok'}" data-go="${k}"><b>${n}</b><span>${l}</span></button>`;
+  return `${demoBanner()}<div class="tiles">${tile(c.jobs,'отворени заявки','jobs','warn')}${tile(c.pms,'просрочена поддръжка','pms','bad')}${tile(c.tests,'просрочени SOLAS тестове','tests','bad')}${tile(c.parts,'части под минимум','parts','warn')}${tile(alerts.length,'тревоги от измервания','meas','bad')}</div>
+  <section><h3>Предстои тази седмица</h3><div class="list">${dueSoon.length?dueSoon.map(([k,o])=>k==='pms'?pmsItem(o):testItem(o)).join(''):'<div class="empty">Няма нищо просрочено или предстоящо до 7 дни.</div>'}</div></section>
+  <section><h3>Отворени заявки</h3><div class="list">${openJ.length?openJ.slice(0,6).map(jobItem).join(''):'<div class="empty">Няма отворени заявки.</div>'}</div></section>
+  ${alerts.length?`<section><h3>Измервания за внимание</h3><div class="list">${alerts.map(measItem).join('')}</div></section>`:''}`},
+jobs(){const fl=[['open','Активни'],['all','Всички'],['Чака части','Чакат части'],['Затворена','Затворени']];
+  let L=db.jobs.filter(j=>ui.jf==='all'?1:ui.jf==='open'?j.status!=='Затворена':j.status===ui.jf).filter(match).sort((a,b)=>b.date.localeCompare(a.date));
+  return `${bar('Заявки и ремонти','jobs',1)}<div class="chips">${fl.map(([k,l])=>`<button class="chip" data-jf="${k}" aria-pressed="${ui.jf===k}">${l}</button>`).join('')}</div><div class="list">${L.length?L.map(jobItem).join(''):'<div class="empty">Няма заявки по този филтър.</div>'}</div>`},
+pms(){const L=db.pms.filter(match).sort((a,b)=>due(a.last,a.interval).days-due(b.last,b.interval).days);
+  return `${bar('Планова поддръжка','pms',1)}<div class="list">${L.length?L.map(pmsItem).join(''):'<div class="empty">Добави първата задача, например проверка на четки на DG на всеки 90 дни.</div>'}</div>`},
+tests(){const L=db.tests.filter(match).sort((a,b)=>due(a.last,a.interval).days-due(b.last,b.interval).days);
+  return `${bar('SOLAS тестове','tests',1)}<div class="list">${L.length?L.map(testItem).join(''):'<div class="empty">Няма тестове.</div>'}</div>`},
+meas(){const G=measGroups().filter(g=>match(eq(g.equip))||match(g.list)).sort((a,b)=>(irAlert(b)-irAlert(a))||b.last.date.localeCompare(a.last.date));
+  return `${bar('Измервания','meas',1)}<div class="hist">Изолация под ${db.meta.irMin} MΩ или спад над 30% се маркира червено. Прагът се сменя от Настройки.</div><div class="list">${G.length?G.map(measItem).join(''):'<div class="empty">Няма измервания.</div>'}</div>`},
+equipment(){const sys=[...new Set(db.equipment.map(e=>e.system))];
+  const L=db.equipment.filter(e=>!ui.ef||e.system===ui.ef).filter(match).sort((a,b)=>a.tag.localeCompare(b.tag));
+  return `${bar('Оборудване','equipment',1)}<div class="chips"><button class="chip" data-ef="" aria-pressed="${!ui.ef}">Всички</button>${sys.map(s=>`<button class="chip" data-ef="${esc(s)}" aria-pressed="${ui.ef===s}">${esc(s)}</button>`).join('')}</div><div class="list">${L.length?L.map(e=>{const oj=db.jobs.filter(j=>j.equip===e.id&&j.status!=='Затворена').length;const od=db.pms.filter(p=>p.equip===e.id&&due(p.last,p.interval).days<0).length;
+    return `<button class="item s-${od?'bad':oj?'warn':'mute'}" data-eq="${e.id}"><span class="stripe"></span><div><div class="it-title"><span class="num">${esc(e.tag)}</span> · ${esc(e.name)}</div><div class="it-meta"><span>${esc(e.loc)}</span><span>${esc(e.system)}</span></div></div><div class="it-side">${oj?`<span class="pill p-warn">${oj} заявки</span>`:''}${od?`<span class="pill p-bad">${od} просрочени</span>`:''}</div></button>`}).join(''):'<div class="empty">Няма оборудване.</div>'}</div>`},
+parts(){const L=db.parts.filter(match).sort((a,b)=>(+a.qty-+a.min)-(+b.qty-+b.min));
+  return `${bar('Резервни части','parts',1)}<div class="list">${L.length?L.map(partItem).join(''):'<div class="empty">Няма части.</div>'}</div>`},
+hand(){const notes=db.hand.slice().sort((a,b)=>(b.pin-a.pin)||b.date.localeCompare(a.date));
+  return `${bar('Handover','hand')}<div class="card"><h3>Обобщение за смяната</h3><div class="hand" id="handText">${esc(handText())}</div><div class="bar"><button class="btn pri" data-act="copyHand">Копирай текста</button><span class="hist">Сглобява се автоматично от отворените заявки, просрочените задачи и бележките.</span></div></div>
+  <section><h3>Бележки</h3><div class="list">${notes.length?notes.map(n=>`<button class="item s-${n.pin?'warn':'mute'}" data-edit="hand" data-id="${n.id}"><span class="stripe"></span><div><div style="white-space:pre-wrap;overflow-wrap:anywhere">${esc(n.text)}</div><div class="it-meta"><span class="num">${fmt(n.date)}</span></div></div><div class="it-side">${n.pin?'<span class="pill p-warn">Закачена</span>':''}</div></button>`).join(''):'<div class="empty">Няма бележки.</div>'}</div></section>`},
+more(){return `<h2>Настройки и архив</h2>
+  <div class="card"><div class="row2"><div class="fld"><label for="s_ship">Кораб</label><input id="s_ship" value="${esc(db.meta.ship)}"></div><div class="fld"><label for="s_ir">Мин. изолация, MΩ</label><input id="s_ir" type="number" step="any" value="${esc(db.meta.irMin)}"></div></div><div><button class="btn pri" data-act="saveSet">Запази</button></div></div>
+  <div class="card"><h3>Архив</h3><p class="hist" style="margin:0">Данните се пазят само в този браузър на това устройство. Копирай архива редовно и го пази в бележка или имейл до себе си.</p><div class="bar"><button class="btn pri" data-act="exp">Копирай архива</button></div><div class="fld"><label for="imp">Възстанови от архив (постави текста или избери файл)</label><textarea id="imp" placeholder='{"meta":…}'></textarea><input type="file" id="impf" accept=".json,.txt,application/json"></div><div><button class="btn" data-act="imp">Възстанови</button></div></div>
+  <div class="card"><h3>Данни</h3><div class="bar"><button class="btn" data-act="demo">Зареди примерните данни</button><button class="btn danger" data-act="wipe2">Изтрий всичко</button></div></div>`}
+};
+function handText(){const t=today(),c=[];
+  c.push('HANDOVER · '+(db.meta.ship||'Кораб')+' · '+fmt(t));
+  const pin=db.hand.filter(h=>h.pin);if(pin.length){c.push('\nВАЖНО:');pin.forEach(h=>c.push('• '+h.text))}
+  const oj=db.jobs.filter(j=>j.status!=='Затворена');c.push('\nОТВОРЕНИ ЗАЯВКИ ('+oj.length+'):');oj.forEach(j=>c.push('• ['+j.status+'] '+(j.equip?eqLabel(j.equip)+' ':'')+j.title+(j.loc?' – '+j.loc:'')+(j.action?'\n  '+j.action:'')));
+  const od=[...db.pms.map(p=>[eqLabel(p.equip)+' '+p.task,due(p.last,p.interval)]),...db.tests.map(x=>[x.name,due(x.last,x.interval)])].filter(x=>x[1].days<=3);
+  c.push('\nПРОСРОЧЕНО / ДО 3 ДНИ ('+od.length+'):');od.forEach(x=>c.push('• '+x[0]+' – '+x[1].txt));
+  const lp=db.parts.filter(p=>+p.qty<+p.min);if(lp.length){c.push('\nЧАСТИ ПОД МИНИМУМ:');lp.forEach(p=>c.push('• '+p.name+' ('+p.pn+'): '+p.qty+'/'+p.min))}
+  const al=measGroups().filter(g=>irAlert(g)||(g.type==='IR'&&trendPct(g)<=-30));if(al.length){c.push('\nИЗМЕРВАНИЯ:');al.forEach(g=>c.push('• '+eqLabel(g.equip)+' '+MTYPES[g.type]+': '+g.last.value+' ('+trendPct(g)+'%)'))}
+  const other=db.hand.filter(h=>!h.pin).slice(-5);if(other.length){c.push('\nБЕЛЕЖКИ:');other.forEach(h=>c.push('• '+fmt(h.date)+' '+h.text))}
+  return c.join('\n')}
+
+function equipSheet(id){const e=eq(id);const J=db.jobs.filter(j=>j.equip===id).sort((a,b)=>b.date.localeCompare(a.date));const P=db.pms.filter(p=>p.equip===id);const G=measGroups().filter(g=>g.equip===id);
+  const s=sheet(`<div><div class="hist num">${esc(e.tag)} · ${esc(e.system)}</div><h2>${esc(e.name)}</h2><div class="hist">${esc(e.loc)}${e.maker?' · '+esc(e.maker):''}</div>${e.notes?`<p style="margin:6px 0 0">${esc(e.notes)}</p>`:''}</div>
+  <div class="bar"><button class="btn sm" data-sub="jobs">+ Заявка</button><button class="btn sm" data-sub="pms">+ Задача</button><button class="btn sm" data-sub="meas">+ Измерване</button><button class="btn sm" id="ed">Редактирай</button></div>
+  <h3>Планова поддръжка</h3><div class="list">${P.length?P.map(pmsItem).join(''):'<div class="empty">Няма задачи.</div>'}</div>
+  <h3>Измервания</h3><div class="list">${G.length?G.map(measItem).join(''):'<div class="empty">Няма измервания.</div>'}</div>
+  <h3>История на ремонтите</h3><div class="list">${J.length?J.map(jobItem).join(''):'<div class="empty">Няма записи.</div>'}</div>
+  <div class="acts"><div class="r"><button class="btn" id="cl">Затвори</button></div></div>`);
+  s.querySelector('#cl').onclick=closeSheet;s.querySelector('#ed').onclick=()=>openForm('equipment',id);
+  s.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>openForm(b.dataset.sub,null,{equip:id}));
+}
+function measSheet(key){const[eid,type]=key.split('|');const g=measGroups().find(x=>x.equip===eid&&x.type===type);const e=eq(eid);
+  const s=sheet(`<div><div class="hist num">${esc(e?e.tag:'')}</div><h2>${MTYPES[type]}</h2><div class="hist">${esc(e?e.name:'')}</div></div><div>${spark(g.list.map(m=>+m.value),irAlert(g)).replace('width="120" height="34"','width="100%" height="80" preserveAspectRatio="none"')}</div>
+  <div class="tbl"><table><thead><tr><th>Дата</th><th style="text-align:right">Стойност</th><th>Бележки</th></tr></thead><tbody>${g.list.slice().reverse().map(m=>`<tr data-edit="meas" data-id="${m.id}" style="cursor:pointer"><td class="num">${fmt(m.date)}</td><td class="n">${m.value}</td><td>${esc(m.notes)}</td></tr>`).join('')}</tbody></table></div>
+  <div class="acts"><button class="btn pri" id="add">+ Ново замерване</button><div class="r"><button class="btn" id="cl">Затвори</button></div></div>`);
+  s.querySelector('#cl').onclick=closeSheet;s.querySelector('#add').onclick=()=>openForm('meas',null,{equip:eid,type});
+  s.querySelectorAll('[data-edit]').forEach(r=>r.onclick=()=>openForm('meas',r.dataset.id));
+}
+
+function render(){
+  document.getElementById('shipName').textContent=db.meta.ship||'Кораб';
+  document.getElementById('today').textContent=fmt(today());
+  nav();const m=document.getElementById('main');m.innerHTML=V[tab]();
+  const q=m.querySelector('#q');if(q){q.oninput=()=>{ui.q=q.value;const pos=q.selectionStart;render();const n=document.getElementById('q');n.focus();n.setSelectionRange(pos,pos)}}
+}
+
+document.addEventListener('click',async e=>{
+  const t=e.target.closest('[data-new],[data-edit],[data-done],[data-q],[data-go],[data-jf],[data-ef],[data-eq],[data-mg],[data-act]');if(!t)return;
+  const inSheet=!!t.closest('.sheet');const d=t.dataset;
+  if(d.new)return openForm(d.new);
+  if(d.done){const o=db[d.done].find(x=>x.id===d.id);o.last=today();o.hist=o.hist||[];if(!o.hist.includes(o.last))o.hist.push(o.last);if(d.done==='tests')o.result='OK';save();if(inSheet){const eid=o.equip;closeSheet();render();eid&&equipSheet(eid)}else render();return toast('Отбелязано за днес')}
+  if(d.edit){if(inSheet&&t.tagName==='TR')return;return openForm(d.edit,d.id)}
+  if(d.q){const p=db.parts.find(x=>x.id===d.id);p.qty=Math.max(0,+p.qty+ +d.q);save();return render()}
+  if(d.go){tab=d.go;try{history.replaceState(null,'','#'+tab)}catch(_){}render();return window.scrollTo(0,0)}
+  if(d.jf!==undefined){ui.jf=d.jf;return render()}
+  if(d.ef!==undefined){ui.ef=d.ef;return render()}
+  if(d.eq)return equipSheet(d.eq);
+  if(d.mg)return measSheet(d.mg);
+  const a=d.act;
+  if(a==='wipe'||a==='wipe2'){if(!t.classList.contains('armed')){t.classList.add('armed');t.textContent='Сигурен ли си? Натисни пак';return}db=empty();save();tab='dash';render();return toast('Всичко е изтрито')}
+  if(a==='demo'){db=sample();save();tab='dash';render();return toast('Заредени са примерните данни')}
+  if(a==='saveSet'){db.meta.ship=document.getElementById('s_ship').value.trim();db.meta.irMin=+document.getElementById('s_ir').value||1;save();render();return toast('Запазено')}
+  if(a==='copyHand'||a==='exp'){const txt=a==='exp'?JSON.stringify(db):handText();try{await navigator.clipboard.writeText(txt);toast('Копирано')}catch(_){const ta=document.getElementById(a==='exp'?'imp':'handText');if(a==='exp'){ta.value=txt;ta.select()}else{const r=document.createRange();r.selectNodeContents(ta);const s=getSelection();s.removeAllRanges();s.addRange(r)}toast('Текстът е маркиран. Копирай го ръчно.')}return}
+  if(a==='imp'){const ta=document.getElementById('imp');const f=document.getElementById('impf').files[0];let txt=ta.value.trim();if(!txt&&f)txt=await f.text();
+    try{const o=JSON.parse(txt);if(!o||!Array.isArray(o.equipment)||!Array.isArray(o.jobs))throw 0;db=Object.assign(empty(),o);db.meta.demo=false;save();tab='dash';render();toast('Архивът е възстановен')}catch(_){toast('Текстът не е валиден архив от това приложение')}}
+});
+render();
+})();
+</script>
+
+</body>
+</html>
